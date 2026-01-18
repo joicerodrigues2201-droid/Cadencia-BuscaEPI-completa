@@ -1,0 +1,2466 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadências BuscaEPI - Sistema Profissional de Follow-up</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #c0392b;
+            --secondary: #2c3e50;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --whatsapp: #25D366;
+            --info: #3498db;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            min-height: 100vh;
+        }
+        header {
+            background: linear-gradient(135deg, var(--primary), #e74c3c);
+            color: white;
+            padding: 60px;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+        header p {
+            font-size: 18px;
+            opacity: 0.95;
+        }
+        .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+        nav {
+            background: #ecf0f1;
+            padding: 30px 60px;
+            border-bottom: 3px solid var(--primary);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+        nav.hidden {
+            max-height: 0;
+            padding: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        .nav-item {
+            padding: 15px 20px;
+            background: white;
+            color: var(--secondary);
+            text-decoration: none;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+        .nav-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(192, 57, 43, 0.2);
+        }
+        .toggle-btn {
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            z-index: 200;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .content {
+            padding: 60px;
+        }
+        .section {
+            margin-bottom: 80px;
+        }
+        .section-header {
+            background: linear-gradient(135deg, var(--primary), #e74c3c);
+            color: white;
+            padding: 25px 35px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+        .section-title {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        .section-subtitle {
+            font-size: 16px;
+            opacity: 0.95;
+        }
+        .ponto-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: all 0.3s;
+        }
+        .ponto-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 8px 25px rgba(192, 57, 43, 0.15);
+        }
+        .ponto-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .ponto-title {
+            color: var(--primary);
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .ponto-day {
+            background: var(--primary);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+        .template-text {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            margin: 20px 0;
+        }
+        .template-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-edit {
+            background: #3498db;
+            color: white;
+        }
+        .btn-edit:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        .btn-whatsapp {
+            background: var(--whatsapp);
+            color: white;
+        }
+        .btn-whatsapp:hover {
+            background: #1ea952;
+            transform: translateY(-2px);
+        }
+        .btn-copy {
+            background: var(--warning);
+            color: white;
+        }
+        .btn-copy:hover {
+            background: #d68910;
+            transform: translateY(-2px);
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 35px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .modal-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--secondary);
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 32px;
+            cursor: pointer;
+            color: #999;
+            line-height: 1;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+        }
+        .modal-close:hover {
+            color: var(--primary);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--secondary);
+        }
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .form-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+        }
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .form-hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+        .btn-cancel {
+            background: #95a5a6;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-cancel:hover {
+            background: #7f8c8d;
+        }
+        .btn-reset {
+            background: var(--info);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-reset:hover {
+            background: #2980b9;
+        }
+        .btn-save {
+            background: var(--success);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-save:hover {
+            background: #229954;
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--secondary);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            font-weight: 700;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 2000;
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                padding: 40px 20px;
+            }
+            header h1 {
+                font-size: 32px;
+            }
+            nav {
+                padding: 20px;
+            }
+            .content {
+                padding: 30px 20px;
+            }
+            .ponto-card {
+                padding: 20px;
+            }
+            .template-text {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="toggle-btn" onclick="toggleNav()">☰ Menu</button>
+    
+    <div class="container">
+        <header>
+            <h1>📊 BuscaEPI - Cadências Profissionais</h1>
+            <p>Sistema de Gestão, Controle e Registro de Entrega de EPIs</p>
+            <div class="badge">✨ 58 Templates + 16 Objeções = 74 Recursos Completos</div>
+        </header>
+        
+        <nav id="mainNav">
+            <div class="nav-grid">
+                <a href="#outbound" class="nav-item">🎯 Prospecção Outbound (8)</a>
+                <a href="#bdrs" class="nav-item">🎯 Leads BDRs (6)</a>
+                <a href="#inbound" class="nav-item">📥 Qualificação Inbound (13)</a>
+                <a href="#reagendamento" class="nav-item">📅 Reagendamento (4)</a>
+                <a href="#confirmacao" class="nav-item">✅ Confirmação (2)</a>
+                <a href="#pos-overview" class="nav-item">📧 Pós-Overview (1)</a>
+                <a href="#proposta" class="nav-item">📄 Pós-Proposta (13)</a>
+                <a href="#reativacao" class="nav-item">🔄 Reativação (1)</a>
+                <a href="#rapidos" class="nav-item">⚡ Templates Rápidos (10)</a>
+                <a href="#objecoes" class="nav-item">🛡️ Objeções (16)</a>
+            </div>
+        </nav>
+        
+        <div class="content">
+            
+            <!-- PROSPECÇÃO OUTBOUND -->
+            <section id="outbound" class="section">
+                <div class="section-header">
+                    <h2 class="section-title">🎯 PROSPECÇÃO OUTBOUND</h2>
+                    <p class="section-subtitle">Primeira abordagem a prospects frios • 20 dias • 8 pontos de contato estratégicos</p>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 1: Abertura Consultiva</div>
+                        <div class="ponto-day">D0</div>
+                    </div>
+                    <div class="template-text" data-template="outbound-1">Olá {{nome}}, tudo bem?
+
+Meu nome é {{seu_nome}}, sou consultor do BuscaEPI.
+
+Estive pesquisando sobre {{empresa}} e me chamou atenção como vocês levam segurança do trabalho a sério.
+
+Uma pergunta rápida: vocês já passaram por situações onde precisaram comprovar entregas de EPIs em auditorias ou fiscalizações?
+
+A maioria das empresas perde HORAS buscando fichas físicas ou consolidando planilhas desatualizadas...
+
+No BuscaEPI, desenvolvemos um sistema que elimina 100% do papel e dá rastreabilidade total em segundos.
+
+Empresas similares à {{empresa}} reduziram em até 85% o tempo gasto com controle de EPIs.
+
+Vale 15 minutos para te mostrar como funciona na prática?</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('outbound-1')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('outbound-1')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('outbound-1')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 2: Valor Específico</div>
+                        <div class="ponto-day">D2</div>
+                    </div>
+                    <div class="template-text" data-template="outbound-2">{{nome}}, bom dia!
+
+Sei que você deve estar super ocupado, então vou ser direto:
+
+Conversando com outros gestores de segurança do trabalho, identificamos 3 problemas que custam CARO para empresas como {{empresa}}:
+
+❌ **Risco trabalhista:** Falta de comprovação de entregas pode custar milhões em processos
+❌ **Tempo perdido:** 8-12h/semana só organizando fichas e buscando documentos
+❌ **Auditoria:** Pânico quando fiscalização chega e você não acha os registros
+
+O BuscaEPI foi construído especificamente para resolver isso:
+
+✅ Assinatura digital com validade jurídica total
+✅ Rastreabilidade em tempo real de TODOS os EPIs
+✅ Alertas automáticos de vencimento e CA  
+✅ Relatórios prontos em 30 segundos
+
+**Mais de 500 empresas** já eliminaram o papel e ganharam tranquilidade.
+
+Posso te mostrar em 15 minutos como isso funcionaria na {{empresa}}?</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('outbound-2')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('outbound-2')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('outbound-2')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 3: Prova Social</div>
+                        <div class="ponto-day">D5</div>
+                    </div>
+                    <div class="template-text" data-template="outbound-3">{{nome}}, como vai?
+
+Vou te contar uma história rápida que pode fazer sentido para {{empresa}}:
+
+Na semana passada, fechamos com uma construtora de médio porte aqui de SP com 280 colaboradores.
+
+**Antes do BuscaEPI:**
+• Gastavam 14 horas/semana só com controle manual de EPIs
+• Já tinham levado 2 multas em auditorias por falta de comprovação
+• Perdiam em média R$ 8.500/mês com retrabalho e desperdício
+
+**Depois de 30 dias usando o sistema:**
+• Tempo de controle: 2 horas/semana (redução de 85%)
+• Passou em auditoria do MTE sem nenhuma não-conformidade
+• Economizou R$ 6.200 só no primeiro mês
+• 100% de rastreabilidade em tempo real
+
+O gestor de segurança me disse: *"Só lamento não ter conhecido antes"*
+
+Quer ver como seria a implementação na {{empresa}}?
+
+Te mando o case completo ou prefere uma call rápida de 10 minutos?</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('outbound-3')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('outbound-3')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('outbound-3')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 4: Pergunta Provocativa</div>
+                        <div class="ponto-day">D8</div>
+                    </div>
+                    <div class="template-text" data-template="outbound-4">{{nome}}, tudo bem?
+
+Deixa eu te fazer uma pergunta sincera:
+
+**Quanto dinheiro a {{empresa}} está perdendo por mês com processos manuais de controle de EPIs?**
+
+Não é só sobre o tempo (que já é muito)...
+
+É sobre:
+• Multas em auditorias por falta de documentação
+• Processos trabalhistas por não comprovar entregas  
+• Retrabalho constante buscando fichas antigas
+• EPIs vencidos que deveriam ter sido trocados
+• Desperdício com compras desnecessárias
+
+A média das empresas que atendemos estava perdendo entre **R$ 4.500 e R$ 12.000 por mês** só com ineficiência no controle de EPIs.
+
+E o pior: a maioria nem sabia disso.
+
+**O BuscaEPI paga a si mesmo** só eliminando esses vazamentos.
+
+Você toparia uma análise rápida (15min) para identificar onde estão os principais pontos de perda na {{empresa}}?
+
+Sem compromisso, só para você ter clareza do cenário atual.</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('outbound-4')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('outbound-4')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('outbound-4')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 5: Conteúdo Educativo</div>
+                        <div class="ponto-day">D11</div>
+                    </div>
+                    <div class="template-text" data-template="outbound-5">{{nome}}, bom dia!
+
+Preparei algo que pode ser útil para você:
+
+📋 **DIAGNÓSTICO: Seu controle de EPIs está te custando caro?**
+
+Responda SIM ou NÃO para cada item:
+
+1. [ ] Você usa fichas físicas ou planilhas Excel para controlar EPIs
+2. [ ] Leva mais de 5 minutos para encontrar o histórico de um colaborador específico  
+3. [ ] Já teve problemas em auditorias por falta de documentação
+4. [ ] Não tem alertas automáticos de vencimento de CA
+5. [ ] Não consegue saber em tempo real quem está com quais EPIs
+6. [ ] Já levou multa ou tem medo de levar em fiscalizações
+7. [ ] Gasta mais de 5 horas/semana só com controle de EPIs
+8. [ ] Não tem como gerar relatórios instantâneos quando solicitado
+
+**RESULTADO:**
+
+📊 **0-2 SIM:** Você está no caminho certo, mas ainda pode otimizar
+📊 **3-5 SIM:** Alto risco! Você está perdendo tempo e dinheiro
+📊 **6+ SIM:** CRÍTICO! É questão de tempo até ter problemas sérios
+
+Se você marcou 3 ou mais, precisamos conversar.
+
+O BuscaEPI resolve todos esses 8 pontos em uma única plataforma.
+
+Posso te mostrar como em 15 minutos?</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('outbound-5')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('outbound-5')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('outbound-5')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 6: Breakup Respeitoso</div>
+                        <div class="ponto-day">D14</div>
+                    </div>
+                    <div class="template-text" data-template="outbound-6">{{nome}}, tudo bem?
+
+Entendo perfeitamente que {{empresa}} pode estar focada em outras prioridades agora.
+
+Antes de encerrar meu contato, deixa eu ser transparente com você:
+
+**Nos últimos 90 dias**, atendi 47 empresas. Dessas:
+
+• 23 implementaram o BuscaEPI imediatamente
+• 18 disseram "não é o momento" e voltaram 2-4 meses depois (após levarem multas ou terem problemas em auditorias)
+• 6 realmente não precisavam
+
+O padrão que vejo é: quem adia acaba gastando muito mais no futuro.
+
+**Não quero que isso aconteça com {{empresa}}.**
+
+Por isso, vou deixar 3 opções:
+
+1️⃣ Agendamos 15min esta semana (sem compromisso)
+2️⃣ Te adiciono em nossa lista VIP para receber 1x/mês conteúdos exclusivos sobre gestão de EPIs
+3️⃣ Encerro contato e não te incomodo mais
+
+Qual faz mais sentido para você?
+
+Obrigado pela atenção até aqui! 🙏</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('outbound-6')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('outbound-6')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('outbound-6')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 7: ROI e Custo de Oportunidade</div>
+                        <div class="ponto-day">D17</div>
+                    </div>
+                    <div class="template-text" data-template="outbound-7">{{nome}}, bom dia!
+
+Sei que você não retornou, mas preciso compartilhar um dado que pode impactar {{empresa}}:
+
+Fizemos uma análise com 50+ clientes e descobrimos algo interessante:
+
+**O custo médio OCULTO de não ter controle digital de EPIs é de R$ 850/mês para cada 100 colaboradores.**
+
+Esse valor vem de:
+• Horas desperdiçadas em processos manuais (R$ 380/mês)
+• Multas e não-conformidades evitáveis (R$ 220/mês)  
+• Retrabalho e busca de documentos (R$ 150/mês)
+• Desperdício com EPIs mal gerenciados (R$ 100/mês)
+
+Se {{empresa}} tem {{num_colaboradores}} colaboradores, vocês podem estar perdendo aproximadamente **R$ {{calculo}}/mês** sem perceber.
+
+O BuscaEPI custa **MENOS** que isso e elimina todos esses vazamentos.
+
+**Em 3-4 meses, o sistema se paga sozinho.**
+
+Vale uma análise detalhada para ver o cenário real da {{empresa}}?
+
+15 minutos, sem compromisso.</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('outbound-7')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('outbound-7')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('outbound-7')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 8: Última Tentativa - Oferta Especial</div>
+                        <div class="ponto-day">D20</div>
+                    </div>
+                    <div class="template-text" data-template="outbound-8">{{nome}},
+
+Esta é minha última mensagem (prometo! 😅)
+
+Conversando com meu gestor, consegui liberar algo especial:
+
+🎁 **CONDIÇÃO EXCLUSIVA para {{empresa}}:**
+
+• Teste gratuito de 14 dias (sem cartão, sem compromisso)
+• Implantação sem custo adicional  
+• Treinamento completo da equipe incluso
+• Suporte dedicado durante o teste
+
+**Por quê estou oferecendo isso?**
+
+Simples: Tenho certeza absoluta que quando você ver o BuscaEPI funcionando na prática, vai entender o impacto que pode ter em {{empresa}}.
+
+Todos os nossos clientes que testaram acabaram contratando.
+
+**Condição válida só até sexta-feira.**
+
+Topa testar por 2 semanas e decidir depois?
+
+Literalmente sem risco algum.
+
+Basta confirmar e já ativo para você hoje mesmo! 
+
+Sim ou não?</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('outbound-8')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('outbound-8')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('outbound-8')">📋 Copiar</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- LEADS PROSPECTADOS PELAS BDRS -->
+            <section id="bdrs" class="section">
+                <div class="section-header">
+                    <h2 class="section-title">🎯 LEADS PROSPECTADOS PELAS BDRs</h2>
+                    <p class="section-subtitle">Leads qualificados pela equipe de BDRs • Transição suave • 6 templates estratégicos</p>
+                </div>
+                
+                <!-- CENÁRIO 1: Lead com Reunião Agendada -->
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">CENÁRIO 1 - DIA 1: Boas-vindas (Logo após aceite)</div>
+                        <div class="ponto-day">D0</div>
+                    </div>
+                    <div class="template-text" data-template="bdr-1">Olá {{nome}}, tudo bem? 😊
+
+Aqui é a Joice do BuscaEPI!
+
+A {{nome_bdr}} me passou que você topou conhecer nossa plataforma - que ótimo! 🎉
+
+**Vou ficar responsável por te acompanhar** nesse processo e garantir que você tire o máximo proveito do overview.
+
+Antes da apresentação, me conta uma coisa:
+
+**Qual é o principal desafio que vocês enfrentam hoje na gestão de EPIs?**
+
+Pode ser:
+• Controle de entregas
+• Rastreabilidade
+• Vencimentos e CAs
+• Custos operacionais
+• Auditorias e conformidade
+• Outro?
+
+Assim consigo **deixar tudo preparado para mostrar exatamente o que faz mais sentido** para a realidade de {{empresa}}! 🎯</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('bdr-1')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('bdr-1')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('bdr-1')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">CENÁRIO 1 - DIA 2: Conteúdo de Valor (Se não respondeu)</div>
+                        <div class="ponto-day">D1</div>
+                    </div>
+                    <div class="template-text" data-template="bdr-2">Oi {{nome}}!
+
+Enquanto não nos falamos, deixa eu te mostrar algo interessante:
+
+📊 **Você sabia?**
+
+Empresas que automatizam o controle de EPIs conseguem:
+✅ **Reduzir em até 60%** o tempo gasto com gestão manual
+✅ **Evitar multas** por irregularidades trabalhistas
+✅ **Eliminar 100%** do retrabalho com fichas físicas
+✅ **Ter rastreabilidade total** em auditorias
+
+O BuscaEPI já ajudou **mais de 500 empresas** a terem controle total dos equipamentos de segurança.
+
+---
+
+Quando tiver um minutinho, me responde aquela pergunta anterior?
+
+Vai me ajudar muito a preparar uma **apresentação sob medida** pra vocês! 😊
+
+Ansioso para nossa conversa! 🚀</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('bdr-2')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('bdr-2')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('bdr-2')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">CENÁRIO 1 - DIA 3: Abordagem Consultiva</div>
+                        <div class="ponto-day">D2</div>
+                    </div>
+                    <div class="template-text" data-template="bdr-3">Oi {{nome}}!
+
+Percebi que a agenda tá corrida por aí, né? Sem problemas! 😊
+
+Deixa eu te fazer uma **pergunta bem rápida e objetiva**:
+
+**Se você pudesse resolver APENAS UM problema na gestão de EPIs da {{empresa}}, qual seria?**
+
+Pode ser bem direto - prometo que vai me ajudar a **não tomar seu tempo com coisas que não fazem sentido** pra vocês.
+
+Exemplos do que mais ouvimos:
+• "Gastamos horas buscando fichas antigas"
+• "Não sabemos quem está com qual EPI"
+• "EPIs vencem e não sabemos"
+• "Já levamos multa por falta de comprovação"
+• "Gastamos demais comprando o que já temos"
+
+Qual mais se aproxima da sua realidade?
+
+Isso vai fazer TODA a diferença na nossa conversa! 🎯</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('bdr-3')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('bdr-3')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('bdr-3')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <!-- CENÁRIO 2: Lead com Interesse em Conhecer -->
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">CENÁRIO 2: Lead com Interesse (Sem reunião agendada)</div>
+                        <div class="ponto-day">Imediato</div>
+                    </div>
+                    <div class="template-text" data-template="bdr-4">Olá {{nome}}, tudo bem? 😊
+
+Sou a Joice, do BuscaEPI.
+
+A {{nome_bdr}} me passou seu contato e comentou sobre seu **interesse em conhecer melhor** nosso sistema de gestão e controle de entrega de EPIs.
+
+**Por que o BuscaEPI?**
+
+Ajudamos empresas como {{empresa}} a:
+✅ **Reduzir custos** com desperdício e retrabalho
+✅ **Trazer rastreabilidade total** das entregas
+✅ **Otimizar processos** de distribuição de EPIs
+✅ **Eliminar papel** e ganhar agilidade
+✅ **Evitar multas** em auditorias
+
+Gostaria de marcar uma **conversa rápida (30-40min)** para:
+1. Entender melhor suas necessidades específicas
+2. Mostrar como o BuscaEPI resolve seus desafios
+3. Ver cases de empresas similares
+
+**Qual seria o melhor dia e horário para você?**
+
+Tenho disponibilidade essa semana:
+• Terça: 10h, 14h ou 16h
+• Quarta: 11h ou 15h
+• Quinta: 09h, 14h ou 16h
+
+Ou me manda outro horário que funcione melhor! 📅</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('bdr-4')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('bdr-4')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('bdr-4')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <!-- CENÁRIO 3: Mensagem de Prospecção -->
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">CENÁRIO 3: Prospecção Outbound (Com reunião já agendada)</div>
+                        <div class="ponto-day">Pré-reunião</div>
+                    </div>
+                    <div class="template-text" data-template="bdr-5">Olá {{nome}}! Tudo bem? 😊
+
+Meu nome é Joice, da equipe comercial da SafetyTec (BuscaEPI).
+
+**Ajudamos empresas como Loggi, Grupo GPS e Komatsu** a:
+✅ Reduzir custos com EPIs
+✅ Evitar passivos trabalhistas
+✅ Ter mais segurança no armazenamento
+✅ Controlar trocas e entregas com precisão
+
+**Já temos uma reunião agendada** para apresentar a plataforma, mas queria entender rapidamente:
+
+**Quais são suas maiores dificuldades na gestão de EPIs hoje?**
+
+Te pergunto isso somente para preparar uma **apresentação mais direcionada e voltada às suas necessidades** 😊
+
+Pode ser bem objetivo - qualquer informação já me ajuda muito!
+
+Exemplos:
+• Controle de estoque
+• Rastreabilidade de entregas
+• Vencimento de CAs
+• Comprovação em auditorias
+• Desperdício/custos
+• Outro?
+
+Aguardo seu retorno! 🎯</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('bdr-5')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('bdr-5')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('bdr-5')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <!-- Template Extra: Confirmação de Reunião -->
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">EXTRA: Confirmação de Reunião (24h antes)</div>
+                        <div class="ponto-day">D-1</div>
+                    </div>
+                    <div class="template-text" data-template="bdr-6">Oi {{nome}}, tudo bem?
+
+Só passando para **confirmar nossa reunião de amanhã**:
+
+📅 **Data:** {{data}}
+🕐 **Horário:** {{horario}}
+⏱️ **Duração:** 30-40 minutos
+💻 **Link:** {{link_reuniao}}
+
+**Na nossa conversa vou te mostrar:**
+✅ Como o BuscaEPI funciona na prática
+✅ Solução para [desafio mencionado pelo lead]
+✅ Cases de empresas similares
+✅ ROI esperado para seu perfil
+
+**Pode confirmar sua presença?** 
+
+Se precisar reagendar, sem problemas - me avisa! 😊
+
+Até amanhã! 🚀</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('bdr-6')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('bdr-6')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('bdr-6')">📋 Copiar</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- QUALIFICAÇÃO INBOUND -->
+            <section id="inbound" class="section">
+                <div class="section-header">
+                    <h2 class="section-title">📥 QUALIFICAÇÃO INBOUND</h2>
+                    <p class="section-subtitle">Leads que demonstraram interesse • 10 dias • 6 pontos de contato</p>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 1: Resposta Imediata</div>
+                        <div class="ponto-day">Imediato</div>
+                    </div>
+                    <div class="template-text" data-template="inbound-1">Oi {{nome}}, muito obrigado pelo interesse no BuscaEPI! 🎉
+
+Vi que você se cadastrou/solicitou contato conosco.
+
+Para eu te ajudar da melhor forma, me conta:
+
+1. Como vocês controlam as entregas de EPIs hoje?
+2. Quantos colaboradores utilizam EPIs na empresa?
+3. Qual é a maior dificuldade no controle e registro?
+
+Com essas informações, posso preparar algo bem direcionado para mostrar como podemos ajudar {{empresa}}.
+
+Quando é melhor para conversarmos? Tenho horários disponíveis hoje mesmo! 😊</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('inbound-1')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('inbound-1')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('inbound-1')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 2: Qualificação Profunda</div>
+                        <div class="ponto-day">D1</div>
+                    </div>
+                    <div class="template-text" data-template="inbound-2">{{nome}}, bom dia!
+
+Tentei falar com você ontem mas não conseguimos conectar.
+
+Para eu preparar a melhor apresentação possível para {{empresa}}, seria muito útil entender:
+
+📋 Cenário Atual:
+• Como vocês registram as entregas de EPIs hoje?
+• O que funciona bem no processo atual?
+• Qual é a maior dor no controle e rastreabilidade?
+
+🎯 Objetivos:
+• O que te motivou a buscar o BuscaEPI?
+• Tem algum prazo para implementar mudanças?
+• Quem mais está envolvido nessa decisão?
+
+Pode responder essas perguntas? Assim vou direto ao que importa para você!
+
+Ou prefere que eu ligue (15min) para alinharmos?</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('inbound-2')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('inbound-2')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('inbound-2')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 3: Proposta de Valor</div>
+                        <div class="ponto-day">D3</div>
+                    </div>
+                    <div class="template-text" data-template="inbound-3">{{nome}}, tudo certo?
+
+Sei que você está interessado no BuscaEPI e quero garantir que você tenha todas as informações.
+
+Com base no perfil de {{empresa}}, você pode se beneficiar de:
+
+✅ Redução de 70% no tempo gasto com controle de EPIs
+✅ Registro digital com assinatura eletrônica
+✅ Rastreabilidade completa de todas as entregas
+✅ Alertas automáticos de vencimento
+✅ Relatórios prontos para auditorias e fiscalização
+
+Empresas similares à sua conseguiram ROI em menos de 2 meses.
+
+Que tal agendarmos 20min para eu te mostrar casos práticos?
+
+Tenho disponibilidade amanhã 10h ou 14h. Qual funciona melhor?</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('inbound-3')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('inbound-3')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('inbound-3')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 4: Case de Sucesso</div>
+                        <div class="ponto-day">D5</div>
+                    </div>
+                    <div class="template-text" data-template="inbound-4">{{nome}}, bom dia!
+
+Preparei algo especial para você:
+
+📊 Case Real: Empresa de Logística (perfil similar ao de {{empresa}})
+
+ANTES:
+❌ 15h por semana controlando EPIs manualmente
+❌ Fichas de papel em pastas físicas
+❌ Sem controle de vencimentos
+❌ Estresse em auditorias
+
+DEPOIS (com BuscaEPI):
+✅ 3h por semana (80% de redução)
+✅ Tudo digital com backup automático
+✅ Alertas automáticos 30 dias antes do vencimento
+✅ Aprovação em 100% das auditorias
+
+💰 Resultado: Tempo economizado + Zero não-conformidades
+
+Quer saber como fizemos isso?
+
+Te mando o PDF completo do case ou prefere uma call rápida?</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('inbound-4')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('inbound-4')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('inbound-4')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 5: Gatilho de Urgência</div>
+                        <div class="ponto-day">D7</div>
+                    </div>
+                    <div class="template-text" data-template="inbound-5">{{nome}}, tudo bem?
+
+Notei que você ainda não agendou nossa conversa.
+
+Queria te avisar de algo importante:
+
+Este mês estamos com uma condição especial para novos clientes:
+🎁 Setup gratuito do sistema (valor: R$ 2.500)
+🎁 Treinamento completo da equipe (4h)
+🎁 Suporte prioritário nos primeiros 60 dias
+
+Essa oferta é válida apenas para empresas que fecharem até dia 30/01.
+
+Além disso, percebi que {{empresa}} tem um perfil excelente para aproveitar nosso sistema ao máximo.
+
+Vale a pena pelo menos conhecer, não acha?
+
+Consigo encaixar você ainda essa semana. Que tal?</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('inbound-5')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('inbound-5')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('inbound-5')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 6: Última Tentativa</div>
+                        <div class="ponto-day">D10</div>
+                    </div>
+                    <div class="template-text" data-template="inbound-6">{{nome}}, tudo bem?
+
+Esta é minha última mensagem - prometo não incomodar mais depois dela! 😊
+
+Vi que você demonstrou interesse no BuscaEPI mas não conseguimos alinhar.
+
+Entendo que pode não ser prioridade agora, mas deixa eu fazer uma última pergunta:
+
+O que te impede de pelo menos conhecer o sistema?
+
+• Falta de tempo?
+• Não é prioridade no momento?
+• Precisa de mais informações específicas?
+• Já tem uma solução satisfatória?
+
+Me conta honestamente - isso vai me ajudar muito!
+
+Se for questão de tempo, posso enviar um vídeo de 3min mostrando o sistema e você assiste quando puder.
+
+Ou se preferir que eu não entre mais em contato, é só me avisar que respeito totalmente.
+
+Aguardo seu retorno! 🙏</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('inbound-6')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('inbound-6')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('inbound-6')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 7: Follow-up Call 1 - Inicial</div>
+                        <div class="ponto-day">D0</div>
+                    </div>
+                    <div class="template-text" data-template="inbound-7">Olá {{nome}}, tudo bem? 😊 
+
+Aqui é a Joice do BuscaEPI! 
+
+Vi que você demonstrou interesse em conhecer melhor nossa plataforma de gestão e controle de EPIs, uniformes e ferramentas.
+
+Para personalizar nossa conversa e entender como podemos ajudar {{empresa}} da melhor forma, gostaria de saber:
+
+**Como vocês fazem o controle de entregas de EPIs atualmente?**
+
+Vocês utilizam planilhas, sistema próprio, ou outro método?
+
+Com essa informação, consigo preparar uma apresentação bem direcionada para suas necessidades específicas! 🎯</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('inbound-7')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('inbound-7')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('inbound-7')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 8: Follow-up Call 2 - Curto e Direto</div>
+                        <div class="ponto-day">D1</div>
+                    </div>
+                    <div class="template-text" data-template="inbound-8">Olá {{nome}}! Tudo bem? 😊
+
+Conseguiu ver minha mensagem de ontem?
+
+Queria só entender rapidinho como vocês fazem hoje o controle dos EPIs pra te mostrar algo que realmente faça sentido. 😉
+
+São literalmente 2 perguntas, leva menos de 1 minuto! 
+
+Pode ser?</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('inbound-8')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('inbound-8')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('inbound-8')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 9: Follow-up Call 3 - Benefício Claro</div>
+                        <div class="ponto-day">D3</div>
+                    </div>
+                    <div class="template-text" data-template="inbound-9">Olá {{nome}}! Tudo bem? 😊
+
+Sei que a rotina é bem corrida 😅
+
+Mas te garanto que entender como automatizar essa parte pode **reduzir em até 35% o tempo gasto** com controle e entrega de EPIs.
+
+Posso te mostrar rapidinho?
+
+É uma conversa de 15 minutos que pode te economizar HORAS por mês.
+
+Vale a pena! 🚀</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('inbound-9')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('inbound-9')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('inbound-9')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 10: Follow-up Call 4 - Vídeo Demonstrativo</div>
+                        <div class="ponto-day">D5</div>
+                    </div>
+                    <div class="template-text" data-template="inbound-10">Olá {{nome}}, tudo bem?
+
+Vou te mandar um **vídeo curtinho mostrando o BuscaEPI em funcionamento**. 
+
+Assim você já vê na prática como ele ajuda a:
+✅ Organizar tudo digitalmente
+✅ Eliminar planilhas e papel
+✅ Ganhar rastreabilidade total
+✅ Economizar tempo
+
+📲 Link do vídeo: https://www.youtube.com/watch?v=8iXoWDVOYAg
+
+São apenas 3 minutos!
+
+Depois me conta o que achou! 😊</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('inbound-10')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('inbound-10')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('inbound-10')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 11: Follow-up Call 5 - Agendamento</div>
+                        <div class="ponto-day">D7</div>
+                    </div>
+                    <div class="template-text" data-template="inbound-11">Oi {{nome}}, tudo bem?
+
+Estou com alguns **horários livres essa semana** pra te mostrar o sistema ao vivo.
+
+É uma conversa rápida (uns 40 minutos) e dá pra ver se faz sentido pro seu processo.
+
+**Horários disponíveis:**
+• Terça: 10h ou 15h
+• Quarta: 14h ou 16h  
+• Quinta: 09h ou 11h
+
+Qual funciona melhor pra você?
+
+Ou se preferir outro dia/horário, me avisa que me adapto! 📅</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('inbound-11')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('inbound-11')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('inbound-11')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 12: Última Call - Fechamento</div>
+                        <div class="ponto-day">D10</div>
+                    </div>
+                    <div class="template-text" data-template="inbound-12">{{nome}}, tudo bem?
+
+Posso **encerrar seu cadastro aqui** ou você ainda quer entender como o BuscaEPI pode ajudar a automatizar o controle de EPIs aí na {{empresa}}?
+
+Prometo que a demonstração é bem objetiva e pode te **economizar boas horas por mês**. 😉
+
+Me dá um retorno só pra eu saber como seguir?
+
+**Opções:**
+1️⃣ Sim, quero ver a demo (te mando os horários)
+2️⃣ Não é o momento (sem problemas, te adiciono na lista de conteúdos)
+3️⃣ Pode encerrar (ok, agradeço a atenção!)
+
+Qual faz sentido pra você?</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('inbound-12')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('inbound-12')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('inbound-12')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 13: Lead Respondeu Qualificação</div>
+                        <div class="ponto-day">Imediato</div>
+                    </div>
+                    <div class="template-text" data-template="inbound-13">Muito obrigada pelo envio das informações, {{nome}}! 😊
+
+Baseado no que você me passou, já consegui identificar alguns pontos onde o BuscaEPI pode ajudar bastante {{empresa}}.
+
+Gostaria de te convidar para uma **apresentação rápida (30-40min)** do nosso sistema de gestão e controle de entregas.
+
+Nessa apresentação, vou te mostrar:
+✅ As principais funcionalidades
+✅ Como o sistema pode te ajudar a superar essas dificuldades específicas
+✅ Cases de empresas similares à sua
+✅ ROI esperado para seu perfil
+
+**O que acha?**
+
+Posso te enviar 3 opções de horários agora mesmo! 📅</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('inbound-13')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('inbound-13')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('inbound-13')">📋 Copiar</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- REAGENDAMENTO -->
+            <section id="reagendamento" class="section">
+                <div class="section-header">
+                    <h2 class="section-title">📅 REAGENDAMENTO (NO-SHOW)</h2>
+                    <p class="section-subtitle">Leads que não compareceram ao overview • 8 dias • 4 pontos de contato</p>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 1: Imediatamente Após Falta</div>
+                        <div class="ponto-day">Imediato</div>
+                    </div>
+                    <div class="template-text" data-template="reagenda-1">{{nome}}, tudo bem?
+
+Ficamos no horário agendado esperando você para o overview da BuscaEPI, mas acabou não dando para conectar.
+
+Tudo certo por aí? Aconteceu algum imprevisto?
+
+Sei que a rotina fica corrida às vezes! 😊
+
+Se ainda tem interesse, posso te recolocar na agenda.
+
+Tenho disponibilidade nos próximos dias:
+📅 Amanhã - 10h ou 15h
+📅 Depois de amanhã - 9h, 11h ou 14h
+
+Qual horário funciona melhor para você?</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('reagenda-1')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('reagenda-1')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('reagenda-1')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 2: Reforço de Valor</div>
+                        <div class="ponto-day">D2</div>
+                    </div>
+                    <div class="template-text" data-template="reagenda-2">{{nome}}, bom dia!
+
+Entendo que você não conseguiu participar do overview na última vez.
+
+Queria reforçar o quanto essa conversa pode ser valiosa para {{empresa}}:
+
+✨ Vou te mostrar exatamente como:
+• Reduzir em 70% o tempo gasto com controle de EPIs
+• Ter registro digital completo de todas as entregas
+• Nunca mais perder um documento em auditoria
+• Ter controle total de vencimentos
+
+São apenas 20 minutos que podem transformar sua gestão de EPIs.
+
+Empresas que passaram pelo overview tomaram decisão em até 48h.
+
+Vale tentar novamente?
+
+Me confirma um horário que seja mais tranquilo para você e eu me adapto! 😊</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('reagenda-2')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('reagenda-2')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('reagenda-2')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 3: Alternativa Assíncrona</div>
+                        <div class="ponto-day">D5</div>
+                    </div>
+                    <div class="template-text" data-template="reagenda-3">{{nome}}, tudo bem?
+
+Percebi que tem sido difícil alinharmos uma call.
+
+Pensando em facilitar para você, tenho duas opções:
+
+📹 OPÇÃO 1: Vídeo Gravado
+Te mando um vídeo de 8min mostrando o sistema completo, os principais recursos e cases de sucesso. Você assiste no seu tempo e depois conversamos se fizer sentido.
+
+📞 OPÇÃO 2: Call Expressa de 10min
+Marco um horário super específico e objetivo, apenas para você conhecer o básico e tirar dúvidas pontuais.
+
+Qual funciona melhor para você?
+
+Ou, se preferir, me diz qual o melhor dia/horário da sua semana e eu me encaixo totalmente na sua agenda! 🙏</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('reagenda-3')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('reagenda-3')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('reagenda-3')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 4: Fechamento Respeitoso</div>
+                        <div class="ponto-day">D8</div>
+                    </div>
+                    <div class="template-text" data-template="reagenda-4">{{nome}}, tudo bem?
+
+Entendo que pode não ser o momento ideal para avaliarmos a BuscaEPI.
+
+Não quero ficar insistindo se não faz sentido para {{empresa}} agora.
+
+Mas antes de encerrar, deixa eu te fazer uma pergunta sincera:
+
+Ainda existe interesse da sua parte ou posso considerar que não é prioridade no momento?
+
+Se não for, sem problemas - agradeço muito pela atenção até aqui! 🙏
+
+Se ainda houver interesse mas a agenda está complicada, podemos deixar em stand-by e eu retorno em outro momento mais tranquilo.
+
+Me avisa como prefere seguir?</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('reagenda-4')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('reagenda-4')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('reagenda-4')">📋 Copiar</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- CONFIRMAÇÃO DE REUNIÃO -->
+            <section id="confirmacao" class="section">
+                <div class="section-header">
+                    <h2 class="section-title">✅ CONFIRMAÇÃO DE REUNIÃO</h2>
+                    <p class="section-subtitle">Garantir presença e preparar o prospect • 2 pontos de contato</p>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">CONFIRMAÇÃO 1: D-1 (Dia Anterior)</div>
+                        <div class="ponto-day">D-1 às 17h</div>
+                    </div>
+                    <div class="template-text" data-template="confirma-1">{{nome}}, boa tarde!
+
+Tudo certo para nosso overview amanhã?
+
+📅 Confirmando os detalhes:
+• Data: [DATA]
+• Horário: [HORA]
+• Duração: 20 minutos
+• Onde: [LINK DA REUNIÃO / TELEFONE]
+
+Para aproveitar melhor nosso tempo, seria ótimo se você pudesse pensar em:
+1. Como funciona o controle de EPIs hoje na empresa
+2. Quantidade aproximada de colaboradores com EPIs
+3. Principais dores no processo atual
+
+Também vou te mostrar cases práticos de empresas do seu segmento.
+
+Confirma para mim que está ok? 😊
+
+Qualquer coisa, estou à disposição!</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('confirma-1')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('confirma-1')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('confirma-1')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">CONFIRMAÇÃO 2: 1h Antes</div>
+                        <div class="ponto-day">H-1</div>
+                    </div>
+                    <div class="template-text" data-template="confirma-2">{{nome}}, bom dia!
+
+Daqui 1 hora temos nosso overview agendado! 🎉
+
+📍 Relembrando:
+• Horário: [HORA]
+• Link: [LINK] / Vou te ligar em: [TELEFONE]
+
+Preparei uma apresentação personalizada com base no perfil de {{empresa}}.
+
+Vou te mostrar:
+✅ Como o sistema funciona na prática
+✅ Cases de sucesso do seu segmento
+✅ Simulação de economia de tempo e ganhos
+✅ Próximos passos (se fizer sentido)
+
+Está tudo ok para conversarmos?
+
+Te encontro já já! 😊</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('confirma-2')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('confirma-2')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('confirma-2')">📋 Copiar</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- PÓS-OVERVIEW IMEDIATO -->
+            <section id="pos-overview" class="section">
+                <div class="section-header">
+                    <h2 class="section-title">📧 ENVIO IMEDIATO PÓS-OVERVIEW</h2>
+                    <p class="section-subtitle">Enviado logo após o término da apresentação • 1 ponto de contato</p>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">Envio Logo Após Overview</div>
+                        <div class="ponto-day">Imediato</div>
+                    </div>
+                    <div class="template-text" data-template="pos-overview-1">{{nome}}, foi ótimo conversar com você agora! 🎉
+
+Conforme combinamos, os próximos passos são:
+
+📋 O QUE VOCÊ RECEBEU:
+✅ Apresentação completa da BuscaEPI (PDF)
+✅ Cases de sucesso do seu segmento
+✅ Proposta comercial personalizada
+✅ Simulação de economia/ROI
+
+📧 **Proposta enviada para: [email]**
+
+PRÓXIMOS PASSOS:
+1️⃣ Você analisa internamente a proposta
+2️⃣ Alinha com o time/decisores
+3️⃣ Retornamos em até 2 dias para esclarecer dúvidas
+4️⃣ Se fizer sentido, partimos para implementação!
+
+⏰ Prazo da proposta: Válida até [DATA - 7 dias]
+
+Conseguiu receber tudo certinho?
+
+Alguma dúvida que já surgiu?
+
+Estou à disposição para o que precisar! 😊</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('pos-overview-1')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('pos-overview-1')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('pos-overview-1')">📋 Copiar</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- PÓS-PROPOSTA -->
+            <section id="proposta" class="section">
+                <div class="section-header">
+                    <h2 class="section-title">📄 FOLLOW-UP PÓS-PROPOSTA</h2>
+                    <p class="section-subtitle">Converter proposta em fechamento • 14 dias • 6 pontos de contato</p>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 1: Check-in Inicial</div>
+                        <div class="ponto-day">D+2</div>
+                    </div>
+                    <div class="template-text" data-template="proposta-1">{{nome}}, bom dia!
+
+Como está a análise da proposta da BuscaEPI?
+
+Sei que você precisa de um tempo para avaliar internamente, mas queria saber se:
+
+✓ Conseguiu abrir e visualizar todos os documentos?
+✓ Ficou algum ponto confuso ou precisa de esclarecimento?
+✓ Tem alguma dúvida sobre valores, prazos ou implementação?
+
+Estou à disposição para esclarecer qualquer coisa - é só chamar! 😊
+
+Lembrando que a proposta é válida até [DATA].</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('proposta-1')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('proposta-1')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('proposta-1')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 2: Pergunta Qualificadora</div>
+                        <div class="ponto-day">D+4</div>
+                    </div>
+                    <div class="template-text" data-template="proposta-2">{{nome}}, tudo bem?
+
+Para eu conseguir te ajudar melhor, me conta:
+
+🔍 Processo de Decisão:
+• Você precisa alinhar com mais alguém antes de decidir?
+• Tem algum prazo específico para implementar?
+• Existe algum ponto da proposta que gostaria de revisar?
+
+💰 Investimento:
+• O valor está dentro do orçamento previsto?
+• Precisa de algum ajuste ou condição especial?
+
+🚀 Implementação:
+• Tem dúvidas sobre o processo de onboarding?
+• Precisa de informações adicionais sobre treinamento?
+
+Me ajuda nessas perguntas para eu te apoiar da melhor forma possível! 🙏</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('proposta-2')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('proposta-2')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('proposta-2')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 3: Case Adicional</div>
+                        <div class="ponto-day">D+6</div>
+                    </div>
+                    <div class="template-text" data-template="proposta-3">{{nome}}, bom dia!
+
+Enquanto você analisa a proposta, queria compartilhar mais um case que pode ser relevante:
+
+📊 Empresa X (setor: [SETOR SIMILAR])
+
+DESAFIO:
+Gastavam muito tempo com controle manual e não tinham rastreabilidade das entregas
+
+SOLUÇÃO:
+Implementaram o BuscaEPI em 7 dias com zero impacto operacional
+
+RESULTADOS (3 meses):
+✅ 75% de redução no tempo de gestão de EPIs
+✅ 100% de rastreabilidade e conformidade
+✅ Zero não-conformidades em auditoria
+✅ ROI em 45 dias
+
+Eles tinham dúvidas similares às suas e hoje não vivem sem!
+
+Quer saber mais detalhes de como foi a implementação deles?
+
+Posso te conectar com o gestor para ele compartilhar a experiência?</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('proposta-3')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('proposta-3')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('proposta-3')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 4: Gatilho de Escassez</div>
+                        <div class="ponto-day">D+8</div>
+                    </div>
+                    <div class="template-text" data-template="proposta-4">{{nome}}, tudo bem?
+
+Passando aqui para te avisar algo importante:
+
+⚠️ A proposta vence em [X dias] ([DATA])
+
+Após essa data, vamos precisar revisar valores e condições.
+
+Além disso, os bônus que incluí (setup gratuito + treinamento) são válidos apenas para fechamentos este mês.
+
+📞 Que tal agendarmos 15min para:
+• Esclarecer dúvidas finais
+• Ajustar algum ponto se necessário
+• Definir próximos passos
+
+Sei que decisões levam tempo, mas não quero que você perca essas condições especiais!
+
+Quando podemos conversar?</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('proposta-4')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('proposta-4')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('proposta-4')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 5: Quebra de Objeções</div>
+                        <div class="ponto-day">D+10</div>
+                    </div>
+                    <div class="template-text" data-template="proposta-5">{{nome}}, bom dia!
+
+Notei que ainda não fechamos e isso me deixou pensando...
+
+Será que existe algum ponto que está te impedindo de seguir?
+
+Deixa eu tentar adivinhar as dúvidas mais comuns:
+
+❓ "O investimento está alto"
+→ Podemos revisar o plano e criar algo mais adequado
+
+❓ "Não é o momento"
+→ Podemos começar com piloto ou fase de testes
+
+❓ "Preciso de aprovação interna"
+→ Posso preparar material executivo para apresentar
+
+❓ "Tenho receio da mudança de processo"
+→ Nossa implementação é gradual, sem impacto operacional
+
+❓ "Não sei se meu time vai aderir"
+→ Temos 97% de taxa de adoção após treinamento
+
+Acertei em alguma? 😊
+
+Me conta abertamente o que está te travando que vamos resolver juntos!</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('proposta-5')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('proposta-5')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('proposta-5')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 6: Fechamento ou Descarte</div>
+                        <div class="ponto-day">D+14</div>
+                    </div>
+                    <div class="template-text" data-template="proposta-6">{{nome}}, tudo bem?
+
+A proposta está vencendo hoje e preciso de um retorno seu.
+
+Entendo que processos de decisão levam tempo, mas também preciso entender onde estamos:
+
+🟢 OPÇÃO 1: Vamos seguir
+→ Fecho hoje com as condições atuais
+
+🟡 OPÇÃO 2: Precisa de mais tempo
+→ Renovamos a proposta com ajustes necessários
+
+🔴 OPÇÃO 3: Não faz sentido agora
+→ Agradeço pela atenção e encerramos por aqui
+
+Qual das três opções reflete melhor sua situação?
+
+Seja honesto comigo - vou respeitar qualquer decisão! 🙏
+
+Mas preciso de um posicionamento para poder te ajudar (ou seguir em frente).
+
+Me retorna até o fim do dia?
+
+Obrigado pela atenção até aqui!</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('proposta-6')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('proposta-6')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('proposta-6')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 7: Aviso de Proposta Enviada</div>
+                        <div class="ponto-day">Imediato</div>
+                    </div>
+                    <div class="template-text" data-template="proposta-7">Olá {{nome}}! 😊 
+
+Joice do sistema BuscaEPI aqui!
+
+Foi ótimo conversar com você hoje e conhecer melhor a {{empresa}}!
+
+A **proposta de implantação já está no seu e-mail**. 📧
+
+Dei uma atenção especial aos pontos que você mencionou como prioridade:
+✅ [ponto específico 1]
+✅ [ponto específico 2]
+✅ [ponto específico 3]
+
+Em breve volto a te chamar para saber o que achou, tudo bem?
+
+Qualquer dúvida, fico à disposição! 🚀</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('proposta-7')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('proposta-7')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('proposta-7')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 8: Follow 1 - Confirmação de Recebimento</div>
+                        <div class="ponto-day">D1</div>
+                    </div>
+                    <div class="template-text" data-template="proposta-8">Olá {{nome}}, tudo bem? 😊
+
+Queria confirmar se **conseguiu dar uma olhadinha na proposta** que te enviei.
+
+Ficou com alguma dúvida ou posso te ajudar em algo pra avançarmos?
+
+Estou à disposição para esclarecer qualquer ponto! 📋</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('proposta-8')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('proposta-8')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="editTemplate('proposta-8')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 9: Follow 2 - Alinhamento Interno</div>
+                        <div class="ponto-day">D3</div>
+                    </div>
+                    <div class="template-text" data-template="proposta-9">Olá {{nome}}, tudo bem? 😊
+
+Conseguiu **conversar internamente sobre a proposta**?
+
+Tem algo que ainda esteja impedindo o avanço?
+
+Posso te ajudar com isso - seja com:
+• Mais informações técnicas
+• Ajustes na proposta
+• Reunião com outros decisores
+• Comparativos com outras soluções
+
+Me conta! 🤝</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('proposta-9')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('proposta-9')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('proposta-9')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 10: Follow 3 - Reforço de Valor</div>
+                        <div class="ponto-day">D5</div>
+                    </div>
+                    <div class="template-text" data-template="proposta-10">Oi {{nome}}, só reforçando:
+
+Nossa solução ajuda empresas como a {{empresa}} a:
+
+✅ **Reduzir riscos trabalhistas** (comprovação imediata de entregas)
+✅ **Eliminar consumo exagerado** (controle preciso do estoque)
+✅ **Garantir rastreabilidade total** dos EPIs (auditoria em 30 segundos)
+
+Segue alguns **cases de empresas que já tiveram ótimos resultados** com o BuscaEPI:
+
+👉 https://lp.buscaepi.com/buscaepi-cases-de-sucesso
+
+Vale dar uma olhada! 📊</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('proposta-10')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('proposta-10')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('proposta-10')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 11: Follow 4 - Check de Continuidade</div>
+                        <div class="ponto-day">D7</div>
+                    </div>
+                    <div class="template-text" data-template="proposta-11">Oi {{nome}}! Tudo bem?
+
+Vi que não conseguimos mais nos falar — só queria confirmar se **ainda faz sentido a gente seguir com a conversa** sobre o BuscaEPI 😊
+
+Posso te ajudar com alguma dúvida ou ficou pra outro momento?
+
+Me dá um feedback só pra eu saber como proceder! 🙏</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('proposta-11')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('proposta-11')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('proposta-11')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 12: Follow 5 - Ajuste de Expectativa</div>
+                        <div class="ponto-day">D10</div>
+                    </div>
+                    <div class="template-text" data-template="proposta-12">Oi {{nome}}! Tudo bem?
+
+Imagino que a rotina esteja corrida por aí 😅
+
+Me confirma só se faz sentido eu **seguir te atualizando sobre o BuscaEPI**, ou se preferem pausar por enquanto.
+
+Assim eu ajusto meu acompanhamento certinho!
+
+**Opções:**
+1️⃣ Sim, continua me mandando info (vou avaliar no meu tempo)
+2️⃣ Pausa por enquanto (sem problemas, quando quiser retoma)
+3️⃣ Não faz sentido agora (ok, obrigada pela atenção!)
+
+Qual funciona melhor pra você?</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('proposta-12')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('proposta-12')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('proposta-12')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">PONTO 13: Último Follow - Encerramento Educado</div>
+                        <div class="ponto-day">D14</div>
+                    </div>
+                    <div class="template-text" data-template="proposta-13">Oi {{nome}}! Tudo bem?
+
+Como não consegui mais retorno, vou **encerrar meu acompanhamento por aqui** pra não te sobrecarregar de mensagens 😊
+
+Caso no futuro vocês queiram automatizar o controle de EPIs e reduzir custos, estarei à disposição — será um prazer retomar esse papo.
+
+**Posso te manter na lista pra receber novidades e cases** de quem já está usando o BuscaEPI?
+
+É só conteúdo útil, 1x por mês, sem cobrança.
+
+Aceita? 📧</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('proposta-13')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('proposta-13')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('proposta-13')">📋 Copiar</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- REATIVAÇÃO DE LEADS PERDIDOS -->
+            <section id="reativacao" class="section">
+                <div class="section-header">
+                    <h2 class="section-title">🔄 REATIVAÇÃO DE LEADS PERDIDOS</h2>
+                    <p class="section-subtitle">Retomar contato com leads antigos • Novidades e benefícios • 1 template estratégico</p>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">REATIVAÇÃO: Novidades e Valor</div>
+                        <div class="ponto-day">Qualquer momento</div>
+                    </div>
+                    <div class="template-text" data-template="reativacao-1">Olá {{nome}}, tudo bem? 👋
+
+Aqui é a Joice, do BuscaEPI.
+
+Você já teve a oportunidade de conhecer nossa plataforma, e queria compartilhar algumas **vantagens que nossos clientes têm alcançado** com o sistema:
+
+✅ **Eliminação de fichas manuais e rasuras**
+✅ **Rastreabilidade total das entregas de EPI**
+✅ **Redução de riscos trabalhistas e de perdas de materiais**
+✅ **Mais tempo para focar em atividades estratégicas de segurança do trabalho**
+
+Além disso, temos algumas **novidades recentes no BuscaEPI:**
+
+🚀 **Relatórios ainda mais completos e personalizados**
+📲 **Novos módulos de Ordem de Serviço e Gestão de Ativos**
+🔐 **Melhorias em segurança e usabilidade do sistema**
+
+Queria saber: **faz sentido retomarmos nossa conversa** para avaliar juntos como essas melhorias podem beneficiar a operação da {{empresa}}?
+
+Posso te mostrar rapidamente as novidades! 😊</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('reativacao-1')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('reativacao-1')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('reativacao-1')">📋 Copiar</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- TEMPLATES RÁPIDOS - ABORDAGEM DIRETA -->
+            <section id="rapidos" class="section">
+                <div class="section-header">
+                    <h2 class="section-title">⚡ TEMPLATES RÁPIDOS</h2>
+                    <p class="section-subtitle">Abordagem direta e resumida • Mensagens curtas e objetivas • 10 templates</p>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">RÁPIDO 1: Abertura Direta</div>
+                        <div class="ponto-day">Imediato</div>
+                    </div>
+                    <div class="template-text" data-template="rapido-1">Oi {{nome}}, {{seu_nome}} aqui do BuscaEPI.
+
+Gestão digital de EPIs com assinatura válida juridicamente.
+
+Você elimina papel, ganha rastreabilidade total e economiza 70% do tempo.
+
+Posso te mostrar em 10min?</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('rapido-1')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('rapido-1')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('rapido-1')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">RÁPIDO 2: Pergunta Provocativa</div>
+                        <div class="ponto-day">D2</div>
+                    </div>
+                    <div class="template-text" data-template="rapido-2">{{nome}}, uma pergunta:
+
+Quanto tempo você gasta por semana só buscando fichas de EPI?
+
+BuscaEPI = 30 segundos para achar qualquer registro.
+
+Vale uma demo rápida?</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('rapido-2')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('rapido-2')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('rapido-2')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">RÁPIDO 3: Resultado Específico</div>
+                        <div class="ponto-day">D4</div>
+                    </div>
+                    <div class="template-text" data-template="rapido-3">{{nome}},
+
+Cliente nosso reduziu tempo de controle de EPIs de 12h para 2h/semana.
+
+Primeira auditoria depois: ZERO não-conformidades.
+
+Quer saber como? 10min de conversa.</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('rapido-3')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('rapido-3')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('rapido-3')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">RÁPIDO 4: Dor Específica</div>
+                        <div class="ponto-day">D6</div>
+                    </div>
+                    <div class="template-text" data-template="rapido-4">{{nome}},
+
+Sua última auditoria foi tranquila ou teve sufoco para achar documentos?
+
+BuscaEPI = tudo digitalizado, rastreável e à prova de fiscalização.
+
+Interesse?</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('rapido-4')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('rapido-4')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('rapido-4')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">RÁPIDO 5: Custo x Benefício</div>
+                        <div class="ponto-day">D8</div>
+                    </div>
+                    <div class="template-text" data-template="rapido-5">{{nome}},
+
+Sistema de EPIs que custa menos que 1 multa em auditoria.
+
+E elimina 100% das multas futuras.
+
+Faz sentido conversar?</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('rapido-5')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('rapido-5')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('rapido-5')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">RÁPIDO 6: Prova Social Direta</div>
+                        <div class="ponto-day">D10</div>
+                    </div>
+                    <div class="template-text" data-template="rapido-6">{{nome}},
+
+Mais de 500 empresas usando BuscaEPI.
+
+Todas eliminaram papel e ganharam conformidade total.
+
+Quer ver como funciona? 10min.</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('rapido-6')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('rapido-6')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('rapido-6')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">RÁPIDO 7: Urgência Sutil</div>
+                        <div class="ponto-day">D12</div>
+                    </div>
+                    <div class="template-text" data-template="rapido-7">{{nome}},
+
+78% dos nossos clientes vieram depois de levar multa.
+
+Não deixa chegar nesse ponto.
+
+Te mando um overview rápido?</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('rapido-7')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('rapido-7')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('rapido-7')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">RÁPIDO 8: Teste Gratuito</div>
+                        <div class="ponto-day">D14</div>
+                    </div>
+                    <div class="template-text" data-template="rapido-8">{{nome}},
+
+Teste BuscaEPI grátis por 14 dias.
+
+Zero risco, zero compromisso.
+
+Topa?</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('rapido-8')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('rapido-8')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('rapido-8')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">RÁPIDO 9: Última Chance Direta</div>
+                        <div class="ponto-day">D16</div>
+                    </div>
+                    <div class="template-text" data-template="rapido-9">{{nome}},
+
+Última tentativa antes de encerrar.
+
+BuscaEPI pode economizar milhares para {{empresa}}.
+
+Sim ou não para uma conversa de 10min?</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('rapido-9')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('rapido-9')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('rapido-9')">📋 Copiar</button>
+                    </div>
+                </div>
+                
+                <div class="ponto-card">
+                    <div class="ponto-header">
+                        <div class="ponto-title">RÁPIDO 10: Follow-up Inbound Rápido</div>
+                        <div class="ponto-day">Imediato</div>
+                    </div>
+                    <div class="template-text" data-template="rapido-10">Oi {{nome}}! 
+
+Vi seu interesse no BuscaEPI.
+
+Quando posso te ligar para explicar? Hoje mesmo tenho horários.</div>
+                    <div class="template-actions">
+                        <button class="btn btn-edit" onclick="editTemplate('rapido-10')">✏️ Editar</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp('rapido-10')">📱 WhatsApp</button>
+                        <button class="btn btn-copy" onclick="copyTemplate('rapido-10')">📋 Copiar</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- TRATAMENTO DE OBJEÇÕES -->
+            <section id="objecoes" class="section">
+                <div class="section-header">
+                    <h2 class="section-title">🛡️ TRATAMENTO DE OBJEÇÕES</h2>
+                    <p class="section-subtitle">Respostas prontas para as 12 objeções mais comuns</p>
+                </div>
+                
+                <div class="objecoes-grid">
+                    <div class="objecao-card">
+                        <div class="objecao-title">❌ "Não temos orçamento agora"</div>
+                        <div class="objecao-resposta">
+                            <strong>Resposta:</strong> "Entendo perfeitamente, {{nome}}. Deixa eu te fazer uma pergunta: quanto vocês estão gastando POR MÊS com processos manuais, multas em auditorias e retrabalho? A maioria das empresas gasta MAIS sem um sistema do que gastaria com o BuscaEPI. Posso te mostrar em 15min como o investimento se paga em 3-4 meses?"
+                        </div>
+                    </div>
+                    
+                    <div class="objecao-card">
+                        <div class="objecao-title">❌ "Preciso falar com meu sócio/diretor"</div>
+                        <div class="objecao-resposta">
+                            <strong>Resposta:</strong> "Perfeito! Isso mostra que vocês levam a decisão a sério. Para facilitar, posso preparar um material específico destacando os 3 principais benefícios para {{empresa}}? E se quiser, posso participar da conversa por 10min para tirar dúvidas técnicas. Quando vocês vão se reunir?"
+                        </div>
+                    </div>
+                    
+                    <div class="objecao-card">
+                        <div class="objecao-title">❌ "Já temos planilhas/sistema atual"</div>
+                        <div class="objecao-resposta">
+                            <strong>Resposta:</strong> "Ótimo! Significa que vocês já entendem a importância do controle. Deixa eu perguntar: quanto tempo você leva para gerar um relatório completo? E se a fiscalização pedir os documentos de um colaborador específico dos últimos 2 anos? Com o BuscaEPI, isso sai em 30 segundos. Quer ver a diferença na prática?"
+                        </div>
+                    </div>
+                    
+                    <div class="objecao-card">
+                        <div class="objecao-title">❌ "Vou pensar e te retorno"</div>
+                        <div class="objecao-resposta">
+                            <strong>Resposta:</strong> "Claro, {{nome}}! Só para eu entender melhor: o que especificamente você precisa avaliar? É questão de orçamento, timing ou tem alguma dúvida técnica? Porque posso te ajudar com informações adicionais agora mesmo. O que te impediria de tomar a decisão hoje?"
+                        </div>
+                    </div>
+                    
+                    <div class="objecao-card">
+                        <div class="objecao-title">❌ "Está muito caro"</div>
+                        <div class="objecao-resposta">
+                            <strong>Resposta:</strong> "Entendo sua preocupação. Deixa eu te mostrar de outra forma: o custo médio que empresas perdem POR MÊS sem um sistema adequado é R$ 850 para cada 100 colaboradores. O BuscaEPI custa MENOS que isso e elimina essas perdas. Não é um custo, é um investimento que se paga sozinho. Posso te mostrar o cálculo para {{empresa}}?"
+                        </div>
+                    </div>
+                    
+                    <div class="objecao-card">
+                        <div class="objecao-title">❌ "Não temos tempo para implementar"</div>
+                        <div class="objecao-resposta">
+                            <strong>Resposta:</strong> "Essa é justamente a razão para implementar, {{nome}}! A implantação do BuscaEPI leva apenas 48 horas e NÓS fazemos todo o setup. Você só precisa nos enviar a base de colaboradores e EPIs. E sabe quanto tempo você VAI ECONOMIZAR depois? De 8 a 12 horas POR SEMANA. Vale trocar 1 dia de setup por anos de eficiência?"
+                        </div>
+                    </div>
+                    
+                    <div class="objecao-card">
+                        <div class="objecao-title">❌ "Vou pesquisar outros fornecedores"</div>
+                        <div class="objecao-resposta">
+                            <strong>Resposta:</strong> "Faz todo sentido pesquisar antes de decidir. Aliás, recomendo que faça isso! Só te peço uma coisa: quando comparar, avalie 3 pontos: (1) Validade jurídica da assinatura digital, (2) Suporte e treinamento inclusos, (3) Tempo de implementação. Somos líderes nesses 3 aspectos. Posso te enviar um comparativo para facilitar sua análise?"
+                        </div>
+                    </div>
+                    
+                    <div class="objecao-card">
+                        <div class="objecao-title">❌ "Nossa equipe não vai se adaptar"</div>
+                        <div class="objecao-resposta">
+                            <strong>Resposta:</strong> "Essa preocupação é super válida! Por isso o BuscaEPI foi desenhado para ser MAIS SIMPLES que papel. Literalmente: menos cliques, menos tempo, menos complicação. Além disso, fazemos treinamento completo da equipe (incluso) e temos suporte via WhatsApp. Todos os nossos clientes tinham essa dúvida e hoje não conseguem mais voltar ao manual. Quer testar por 14 dias?"
+                        </div>
+                    </div>
+                    
+                    <div class="objecao-card">
+                        <div class="objecao-title">❌ "Preciso ver mais cases/referências"</div>
+                        <div class="objecao-resposta">
+                            <strong>Resposta:</strong> "Perfeito! Transparência é fundamental. Temos mais de 500 empresas ativas e posso te passar contato de 3 clientes do seu segmento para você conversar diretamente. Além disso, te mando agora 5 cases com resultados reais. Qual setor te interessa mais? Construção, indústria, logística?"
+                        </div>
+                    </div>
+                    
+                    <div class="objecao-card">
+                        <div class="objecao-title">❌ "Não é prioridade agora"</div>
+                        <div class="objecao-resposta">
+                            <strong>Resposta:</strong> "Entendo, {{nome}}. Só um alerta: 78% dos nossos clientes vieram depois de terem problemas em auditorias ou levarem multas. O custo de esperar costuma ser 10x maior que o investimento no sistema. Não quero que isso aconteça com {{empresa}}. Que tal garantir pelo menos um teste gratuito agora para quando virar prioridade você já estar preparado?"
+                        </div>
+                    </div>
+                    
+                    <div class="objecao-card">
+                        <div class="objecao-title">❌ "Vou esperar o próximo ano/orçamento"</div>
+                        <div class="objecao-resposta">
+                            <strong>Resposta:</strong> "Compreendo o planejamento orçamentário. Mas me responde: quantas multas, horas extras e retrabalho vocês vão ter até lá? A maioria das empresas economiza mais em 6 meses do que o investimento anual no BuscaEPI. Podemos começar com um piloto pequeno agora e expandir no próximo ciclo orçamentário?"
+                        </div>
+                    </div>
+                    
+                    <div class="objecao-card">
+                        <div class="objecao-title">❌ "Nosso sistema interno já resolve"</div>
+                        <div class="objecao-resposta">
+                            <strong>Resposta:</strong> "Que bom que vocês têm algo! Me tira uma dúvida: esse sistema tem assinatura digital com validade jurídica? Gera relatórios automáticos? Alerta sobre vencimentos? Funciona offline? Integra com outros sistemas? O BuscaEPI foi construído ESPECIFICAMENTE para EPIs, com todas as exigências da NR-6. Posso te mostrar o que um sistema especializado oferece?"
+                        </div>
+                    </div>
+                    
+                    <div class="objecao-card">
+                        <div class="objecao-title">❌ "Preferimos manter processo físico/manual"</div>
+                        <div class="objecao-resposta">
+                            <strong>Resposta:</strong> "Perfeito, {{nome}}! Entendo totalmente — é comum manter o processo manual quando ele parece estar funcionando. Só pra te deixar um insight: empresas que mantêm o controle físico acabam perdendo até 25% de rastreabilidade e tempo de gestão. Sem falar no risco em auditorias quando precisam encontrar documentos antigos. Posso te enviar um case de uma empresa que fez a transição pro digital e conseguiu reduzir o retrabalho em 70%? Pode te ajudar a avaliar em um futuro próximo 😉"
+                        </div>
+                    </div>
+                    
+                    <div class="objecao-card">
+                        <div class="objecao-title">❌ "Precisa passar por análise da diretoria"</div>
+                        <div class="objecao-resposta">
+                            <strong>Resposta:</strong> "Entendido, {{nome}}! 👍 Esse tipo de decisão realmente costuma envolver a diretoria. Se quiser, posso te ajudar com um **resumo executivo com os principais ganhos e indicadores** pra facilitar a apresentação interna. Ele já vem pronto com: ROI esperado, comparação antes/depois, cases do setor, e benefícios quantificados. Quer que eu te envie agora por aqui? Ou prefere que eu participe de uma reunião rápida com a diretoria pra apresentar diretamente?"
+                        </div>
+                    </div>
+                    
+                    <div class="objecao-card">
+                        <div class="objecao-title">❌ "Concorrente ofereceu preço menor"</div>
+                        <div class="objecao-resposta">
+                            <strong>Resposta:</strong> "Oi {{nome}}, tudo bem? Super entendo, é natural comparar valores entre fornecedores 😊 Só vale reforçar que o BuscaEPI vai além do controle de entrega — ele gera **rastreabilidade total, reduz desperdício e traz indicadores automáticos** que a maioria dos sistemas não tem. Por exemplo: Relatório de consumo por período e detalhado, Relatório de devoluções e trocas antes do previsto, Alertas inteligentes de CA vencido, Integração com outros sistemas. A economia que você ganha em processos e eficiência normalmente compensa a diferença de investimento. Posso te mostrar um comparativo detalhado do que está incluso?"
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+        </div>
+    </div>
+    
+    <!-- MODAL -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">✏️ Editar Template</h2>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Nome/Empresa</label>
+                <input type="text" id="editNome" class="form-input" placeholder="Ex: João Silva">
+                <p class="form-hint">Substitui {{nome}} e {{empresa}}</p>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Telefone WhatsApp (com DDD)</label>
+                <input type="tel" id="editTelefone" class="form-input" placeholder="11999999999">
+                <p class="form-hint">Apenas números com DDD</p>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Mensagem</label>
+                <textarea id="editTexto" class="form-textarea"></textarea>
+                <p class="form-hint">Edite conforme necessário</p>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn btn-cancel" onclick="closeModal()">Cancelar</button>
+                <button class="btn btn-reset" onclick="resetTemplate()">🔄 Restaurar</button>
+                <button class="btn btn-save" onclick="saveTemplate()">💾 Salvar</button>
+                <button class="btn btn-save btn-whatsapp" onclick="saveAndSendWhatsApp()">📱 Salvar e Enviar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- TOAST -->
+    <div id="toast" class="toast"></div>
+    
+    <script>
+        let currentTemplate = null;
+        
+        // Toggle nav
+        function toggleNav() {
+            const nav = document.getElementById('mainNav');
+            nav.classList.toggle('hidden');
+        }
+        
+        // Edit template
+        function editTemplate(id) {
+            currentTemplate = id;
+            const element = document.querySelector(`[data-template="${id}"]`);
+            const texto = localStorage.getItem(`template_${id}`) || element.textContent.trim();
+            
+            document.getElementById('editTexto').value = texto;
+            document.getElementById('editNome').value = localStorage.getItem('nome') || '';
+            document.getElementById('editTelefone').value = localStorage.getItem('telefone') || '';
+            document.getElementById('editModal').classList.add('active');
+        }
+        
+        // Close modal
+        function closeModal() {
+            document.getElementById('editModal').classList.remove('active');
+            currentTemplate = null;
+        }
+        
+        // Save template
+        function saveTemplate() {
+            if (!currentTemplate) return;
+            
+            const texto = document.getElementById('editTexto').value;
+            const nome = document.getElementById('editNome').value;
+            const telefone = document.getElementById('editTelefone').value;
+            
+            // Salvar no localStorage
+            localStorage.setItem(`template_${currentTemplate}`, texto);
+            localStorage.setItem('nome', nome);
+            localStorage.setItem('telefone', telefone);
+            
+            // ATUALIZAR O TEMPLATE VISÍVEL NA TELA
+            const element = document.querySelector(`[data-template="${currentTemplate}"]`);
+            if (element) {
+                element.textContent = texto;
+            }
+            
+            showToast('✅ Template salvo com sucesso!');
+            closeModal();
+        }
+        
+        // Reset template
+        function resetTemplate() {
+            if (!currentTemplate) return;
+            
+            const element = document.querySelector(`[data-template="${currentTemplate}"]`);
+            document.getElementById('editTexto').value = element.textContent.trim();
+            localStorage.removeItem(`template_${currentTemplate}`);
+            
+            showToast('🔄 Template restaurado!');
+        }
+        
+        // Save and send
+        function saveAndSendWhatsApp() {
+            saveTemplate();
+            setTimeout(() => sendWhatsApp(currentTemplate), 500);
+        }
+        
+        // Send WhatsApp
+        function sendWhatsApp(id) {
+            const element = document.querySelector(`[data-template="${id}"]`);
+            let texto = localStorage.getItem(`template_${id}`) || element.textContent.trim();
+            let telefone = localStorage.getItem('telefone') || '';
+            const nome = localStorage.getItem('nome') || '';
+            
+            // Replace variables
+            if (nome) {
+                texto = texto.replace(/\{\{nome\}\}/g, nome);
+                texto = texto.replace(/\{\{empresa\}\}/g, nome);
+            }
+            
+            // Validate phone
+            telefone = telefone.replace(/\D/g, '');
+            if (!telefone) {
+                alert('⚠️ Por favor, insira um número de telefone!');
+                editTemplate(id);
+                return;
+            }
+            
+            if (!telefone.startsWith('55')) {
+                telefone = '55' + telefone;
+            }
+            
+            // Open WhatsApp
+            const url = `https://web.whatsapp.com/send?phone=${telefone}&text=${encodeURIComponent(texto)}`;
+            window.open(url, '_blank');
+            
+            showToast('📱 Abrindo WhatsApp Web...');
+        }
+        
+        // Copy template
+        function copyTemplate(id) {
+            const element = document.querySelector(`[data-template="${id}"]`);
+            let texto = localStorage.getItem(`template_${id}`) || element.textContent.trim();
+            const nome = localStorage.getItem('nome') || '';
+            
+            if (nome) {
+                texto = texto.replace(/\{\{nome\}\}/g, nome);
+                texto = texto.replace(/\{\{empresa\}\}/g, nome);
+            }
+            
+            navigator.clipboard.writeText(texto).then(() => {
+                showToast('📋 Texto copiado!');
+            }).catch(() => {
+                const textarea = document.createElement('textarea');
+                textarea.value = texto;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showToast('📋 Texto copiado!');
+            });
+        }
+        
+        // Show toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+        
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Close modal on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+        
+        // Close modal on outside click
+        window.onclick = (e) => {
+            if (e.target.id === 'editModal') closeModal();
+        };
+        
+        // CARREGAR TEMPLATES SALVOS AO INICIAR A PÁGINA
+        function loadSavedTemplates() {
+            // Percorrer todos os templates e carregar os salvos
+            document.querySelectorAll('[data-template]').forEach(element => {
+                const templateId = element.getAttribute('data-template');
+                const savedText = localStorage.getItem(`template_${templateId}`);
+                
+                if (savedText) {
+                    element.textContent = savedText;
+                }
+            });
+        }
+        
+        // Carregar templates salvos quando a página carregar
+        window.addEventListener('DOMContentLoaded', loadSavedTemplates);
+        
+        // Também tentar carregar imediatamente (caso DOMContentLoaded já tenha passado)
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadSavedTemplates);
+        } else {
+            loadSavedTemplates();
+        }
+    </script>
+</body>
+</html>
